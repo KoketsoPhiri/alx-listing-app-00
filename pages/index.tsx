@@ -1,47 +1,67 @@
 // pages/index.tsx
 import Head from 'next/head';
+//import Image from 'next/image';
 import Card from '../components/common/Card';
-import Button from '../components/common/Button';
-import { APP_NAME } from '../constants';
+import Pill from '../components/common/Pill'; // Import the Pill component
+import { PROPERTYLISTINGSAMPLE, HERO_BACKGROUND_IMAGE, FILTER_LABELS } from '../constants'; // Import constants
+import { PropertyProps } from '../interfaces'; // Import PropertyProps
 
-const HomePage: React.FC = () => {
+export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
+    <div className="flex flex-col min-h-screen">
       <Head>
-        <title>{APP_NAME} - Home</title>
-        <meta name="description" content="A modern Airbnb clone listing app" />
+        <title>ALX Listing App - Find Your Favorite Place</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header className="text-center mb-12">
-        <h1 className="text-5xl font-extrabold text-gray-900 mb-4">
-          Welcome to {APP_NAME}
-        </h1>
-        <p className="text-lg text-gray-600">
-          Your gateway to unique properties.
-        </p>
-      </header>
-
-      <main className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6">Featured Listings</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card title="Cozy Apartment in City Center" description="A beautiful 1-bedroom apartment close to all amenities." />
-          <Card title="Spacious Family House" description="Perfect for families, with a large garden and 4 bedrooms." />
-          <Card title="Modern Studio Loft" description="Chic loft with stunning city views, ideal for solo travelers." />
+      {/* Hero Section */}
+      <section
+        className="relative h-[400px] flex items-center justify-center text-white text-center"
+        style={{
+          backgroundImage: `url(${HERO_BACKGROUND_IMAGE})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div className="absolute inset-0 bg-black opacity-40"></div> {/* Overlay for better text readability */}
+        <div className="relative z-10 px-4">
+          <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-4 drop-shadow-lg">
+            Find your favorite place here!
+          </h1>
+          <p className="text-lg md:text-xl font-medium drop-shadow-md">
+            The best prices for over 2 million properties worldwide.
+          </p>
         </div>
+      </section>
 
-        <div className="text-center mt-12">
-          <Button onClick={() => alert('View More Properties clicked!')}>
-            View More Properties
-          </Button>
-        </div>
+      {/* Main content area */}
+      <main className="flex-1 container mx-auto px-6 py-8">
+        {/* Filter Section (Pills) - Moved here from header for better component separation based on instruction */}
+        <section className="mb-8 overflow-x-auto whitespace-nowrap scrollbar-hide">
+          <div className="flex space-x-3 py-2 justify-center md:justify-start">
+            {FILTER_LABELS.map((label) => (
+              <Pill key={label} label={label} onClick={() => console.log(`Filter: ${label}`)} />
+            ))}
+          </div>
+        </section>
+
+        {/* Listing Section */}
+        <section>
+          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center md:text-left">
+            Featured Properties
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {PROPERTYLISTINGSAMPLE.map((property: PropertyProps) => (
+              <Card
+                key={property.name} // Using name as key, ideally use a unique ID
+                title={property.name}
+                description={`${property.address.city}, ${property.address.country} - ${property.rating} ★`}
+                imageUrl={property.image}
+              />
+            ))}
+          </div>
+        </section>
       </main>
-
-      <footer className="text-center mt-12 text-gray-500">
-        <p>&copy; {new Date().getFullYear()} {APP_NAME}. All rights reserved.</p>
-      </footer>
     </div>
   );
-};
-
-export default HomePage;
+}
